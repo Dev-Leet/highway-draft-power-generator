@@ -35,12 +35,12 @@ export default function UserPage({ onBack }) {
                 position: "fixed",
                 inset: 0,
                 zIndex: -1,
-                backgroundImage: "url('/bg-hero.png')",
+                backgroundImage: `url('${mode === "light" ? "/bg-hero.png" : "/bg-dark.jpeg"}')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
                 opacity: mode === "light" ? 0.5 : 0.5,
-                transition: "opacity 0.5s ease",
+                transition: "opacity 0.5s ease, background-image 0.5s ease",
                 pointerEvents: "none",
                 }} />
       <Topbar />
