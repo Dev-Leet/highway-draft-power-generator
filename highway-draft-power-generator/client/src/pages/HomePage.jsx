@@ -44,7 +44,7 @@ export default function HomePage({ onAdminLogin, onEnterUser }) {
           Highway Draft Power Generator
         </h1>
         <p style={{ color: "#64748b", fontSize: 15, maxWidth: 520, margin: "0 auto" }}>
-          Real-time data visualization and monitoring system for Raspberry Pi Pico &amp; ESP8266.
+          Real-time data visualization and monitoring system.
         </p>
       </div>
 

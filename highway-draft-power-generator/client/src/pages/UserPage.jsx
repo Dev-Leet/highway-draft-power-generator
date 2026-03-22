@@ -51,9 +51,7 @@ export default function UserPage({ onBack }) {
             About The Project
           </h2>
           <p style={{ color: "#64748b", fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
-            This system is designed to bridge the gap between low-level hardware sensors (utilizing
-            RP2040 and ESP8266 microcontrollers) and high-level web visualization. It captures
-            energy generation data in real-time, processes it, and displays it via dynamic spline
+            This system captures energy generation data in real-time, processes it, and displays it via dynamic spline
             and line charts.
           </p>
 
