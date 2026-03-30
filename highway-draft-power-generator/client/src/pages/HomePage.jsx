@@ -138,14 +138,14 @@ export default function HomePage({ onAdminLogin, onEnterUser }) {
               }}>
                 <User size={15} color={tokens.success} />
               </div>
-              <h2 style={{ color: tokens.text, fontWeight: 700, fontSize: 15, transition: "color 0.35s" }}>User Access</h2>
+              <h2 style={{ color: tokens.text, fontWeight: 700, fontSize: 15, transition: "color 0.35s" }}>User Feedback</h2>
             </div>
             <p style={{ color: tokens.textFaint, fontSize: 12, lineHeight: 1.6, marginBottom: 14, transition: "color 0.35s" }}>
               Provide feedback to the development team. No authentication required.
             </p>
             <button className="btn-green" onClick={onEnterUser} style={{ fontSize: 13, padding: "9px 16px" }}>
               <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
-                Enter as User <ChevronRight size={15} />
+                Feedback Form<ChevronRight size={15} />
               </span>
             </button>
           </div>

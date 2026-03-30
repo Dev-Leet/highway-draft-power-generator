@@ -60,7 +60,7 @@ export default function UserPage({ onBack }) {
 
         <div className="glass-card" style={{ padding: 32 }}>
           <h2 style={{ color: tokens.text, fontWeight: 700, fontSize: 20, marginBottom: 12, transition: "color 0.35s" }}>
-            About The Project
+            Highway Draft Power Generator 
           </h2>
           <p style={{ color: tokens.textFaint, fontSize: 14, lineHeight: 1.75, marginBottom: 28, transition: "color 0.35s" }}>
             This system captures energy generation data in real-time and displays it.
@@ -91,7 +91,7 @@ export default function UserPage({ onBack }) {
               <label style={{ color: tokens.textMuted, fontSize: 13, display: "block", marginBottom: 6, fontWeight: 500 }}>
                 Contact (Email / Phone)
               </label>
-              <input className="input-field" value={form.contact} onChange={set("contact")} placeholder="you@email.com" />
+              <input className="input-field" value={form.contact} onChange={set("contact")} placeholder="you@gmail.com" />
             </div>
           </div>
 
@@ -101,7 +101,7 @@ export default function UserPage({ onBack }) {
             </label>
             <textarea
               className="input-field" rows={5} value={form.message}
-              onChange={set("message")} placeholder="Describe your feedback or issue or any hardware faults found..."
+              onChange={set("message")} placeholder="Describe your feedback or issue or any faults found..."
               style={{ resize: "vertical" }}
             />
           </div>

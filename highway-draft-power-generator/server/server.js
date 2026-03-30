@@ -22,6 +22,10 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/data", require("./routes/data"));
 app.use("/api/admin", require("./routes/admin"));
 
+app.use("/api/ai", require("./routes/ai"));
+// IoT data ingestion
+const iotRoutes = require("./routes/iot")(io);
+app.use("/api/iot", iotRoutes);
 // Socket.io connection
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -30,8 +34,7 @@ io.on("connection", (socket) => {
   );
 });
 
-// Start simulated hardware data stream
-startStream(io);
+
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () =>

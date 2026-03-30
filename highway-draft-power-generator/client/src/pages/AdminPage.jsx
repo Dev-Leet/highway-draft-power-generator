@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef  } from "react";
 import {
   Activity, Clock, Zap, Download, Upload,
   LogOut, Brain, RefreshCw, BarChart2,
@@ -65,37 +65,37 @@ export default function AdminPage({ onLogout }) {
   const [tab, setTab] = useState("chart");
   const [chartType, setChartType] = useState("spline");
   const [aiSummary, setAiSummary] = useState("");
+  const [uiStatus, setUiStatus] = useState(status);
   const [loadingAI, setLoadingAI] = useState(false);
   const [importStatus, setImportStatus] = useState("");
   const fileRef = useRef();
+  
 
   const handleAI = async () => {
     setLoadingAI(true);
     setAiSummary("");
     try {
-        const snapshot = rawRecords
-        .slice(-20)
-        .map(r => `${new Date(r.timestamp).toISOString()}: ${r.voltage_watt}W`)
-        .join("\n");
+    const handleAI = async () => {
+    setLoadingAI(true);
+    setAiSummary("");
 
-        const prompt = `Analyze this Highway Draft Power Generator sensor data (voltage in Watts):\n\n${snapshot}\n\nProvide a concise 3-4 sentence technical summary: average energy output, trends (peak/dip times), anomalies, and one actionable insight. Be direct and professional.`;
+    try {
+      const res = await api.post("/ai/summary", {
+       records: rawRecords
+      });
+ 
+      const text = res.data.summary;
 
-        const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            }),
-        }
-        );
+      if (!text) throw new Error("Empty response");
 
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setAiSummary(text);
 
-        const json = await res.json();
-        const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Empty response");
+    } catch {
+      setAiSummary(generateFallbackSummary(rawRecords.slice(-10)));
+    }
+
+     setLoadingAI(false);
+    };
 
         setAiSummary(text);
     } catch {
@@ -117,6 +117,7 @@ export default function AdminPage({ onLogout }) {
   };
 
   const energy = lastPacket?.voltage_watt ?? stats.avg ?? 0;
+  const filteredRecords = rawRecords.filter((_, index) => index % 6 === 0);
 
   const s = (style) => style; // passthrough for readability
 
@@ -159,13 +160,21 @@ export default function AdminPage({ onLogout }) {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 12 }}>
           <div>
             <h2 style={{ color: tokens.text, fontWeight: 800, fontSize: 20, letterSpacing: -0.5, transition: "color 0.35s" }}>
-              Project Dashboard
+              HDPG Dashboard
             </h2>
             <p style={{ color: tokens.textGhost, fontSize: 12, transition: "color 0.35s" }}>Administrator Control Panel</p>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button
-              onClick={status === "paused" ? resume : pause}
+              onClick={() => {
+              if (uiStatus === "paused") {
+              resume();
+              setUiStatus("offline");   // DISCONNECTED
+              } else {
+              pause();
+              setUiStatus("paused");    // PAUSED
+             }
+              }}
               style={{
                 background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.3)",
                 color: "#f97316", padding: "8px 14px", borderRadius: 8,
@@ -206,7 +215,7 @@ export default function AdminPage({ onLogout }) {
             <p style={{ color: tokens.textFaint, fontSize: 11, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
               Hardware Status
             </p>
-            <StatusPill status={status} />
+            <StatusPill status={uiStatus} />
             <p style={{ color: tokens.textGhost, fontSize: 11, marginTop: 5 }}>Target: Arduino / ES32-S3</p>
           </div>
 
@@ -296,34 +305,6 @@ export default function AdminPage({ onLogout }) {
 
                 {/* Import / Export */}
                 <div style={{ display: "flex", gap: 12, marginTop: 18, flexWrap: "wrap" }}>
-                  {/* Import */}
-                  <div style={{
-                    flex: "1 1 180px", background: tokens.panelBg,
-                    border: `1px solid ${tokens.borderSubtle}`, borderRadius: 8, padding: 12,
-                    transition: "all 0.35s",
-                  }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
-                      <Upload size={13} color={tokens.textMuted} />
-                      <span style={{ color: tokens.textMuted, fontSize: 12, fontWeight: 600 }}>Import Data</span>
-                    </div>
-                    <input type="file" accept=".csv" ref={fileRef} style={{ display: "none" }} onChange={handleImport} />
-                    <button
-                      onClick={() => fileRef.current?.click()}
-                      style={{
-                        width: "100%", background: tokens.accentBg,
-                        border: `1px solid ${tokens.accentBorder}`, borderRadius: 6,
-                        padding: "7px 10px", color: tokens.accent, cursor: "pointer", fontSize: 12, fontWeight: 500,
-                        transition: "all 0.2s",
-                      }}
-                    >
-                      Select CSV File
-                    </button>
-                    {importStatus && (
-                      <p style={{ color: importStatus.startsWith("✓") ? tokens.success : tokens.danger, fontSize: 11, marginTop: 6, fontWeight: 500 }}>
-                        {importStatus}
-                      </p>
-                    )}
-                  </div>
 
                   {/* Export */}
                   <div style={{
@@ -361,7 +342,7 @@ export default function AdminPage({ onLogout }) {
                 </div>
               </>}
 
-              {tab === "table"    && <DataTable records={rawRecords} />}
+              {tab === "table"    && <DataTable records={filteredRecords} />}
               {tab === "feedback" && <FeedbackViewer />}
             </div>
           </div>
